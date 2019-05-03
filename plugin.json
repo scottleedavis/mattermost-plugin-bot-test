@@ -1,0 +1,18 @@
+{
+    "id": "com.github.scottleedavis.mattermost-plugin-bot-test",
+    "name": "Test Bot Plugin",
+    "description": "Tests a Bot",
+    "version": "0.1.0",
+    "server": {
+        "executables": {
+            "linux-amd64": "server/dist/plugin-linux-amd64",
+            "darwin-amd64": "server/dist/plugin-darwin-amd64",
+            "windows-amd64": "server/dist/plugin-windows-amd64.exe"
+        }
+    },
+    "settings_schema": {
+        "header": "",
+        "footer": "",
+        "settings": []
+    }
+}
