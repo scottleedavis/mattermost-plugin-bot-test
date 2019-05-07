@@ -1,4 +1,4 @@
-# mattermost-plugin-bot-test [![CircleCI](https://circleci.com/gh/scottleedavis/mattermost-plugin-bot-test/tree/master.svg?style=svg)](https://circleci.com/gh/scottleedavis/mattermost-plugin-bot-test/tree/master) 
+# mattermost-plugin-bot-test 
 
 _**A bot that tests**_
 
