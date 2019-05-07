@@ -1,4 +1,4 @@
-# mattermost-plugin-remind [![CircleCI](https://circleci.com/gh/scottleedavis/mattermost-plugin-remind/tree/master.svg?style=svg)](https://circleci.com/gh/scottleedavis/mattermost-plugin-remind/tree/master)  [![codecov](https://codecov.io/gh/scottleedavis/mattermost-plugin-remind/branch/master/graph/badge.svg)](https://codecov.io/gh/scottleedavis/mattermost-plugin-remind)
+# mattermost-plugin-bot-test [![CircleCI](https://circleci.com/gh/scottleedavis/mattermost-plugin-bot-test/tree/master.svg?style=svg)](https://circleci.com/gh/scottleedavis/mattermost-plugin-bot-test/tree/master) 
 
 _**A bot that tests**_
 
