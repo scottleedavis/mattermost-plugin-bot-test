@@ -37,6 +37,8 @@ func (p *Plugin) OnActivate() error {
 	}
 
 	p.ensureBotExists()
+	p.ServerConfig = p.API.GetConfig()
+	p.router = p.InitAPI()
 
 	for _, team := range teams {
 		if err := p.registerCommand(team.Id); err != nil {
@@ -55,7 +57,7 @@ func (p *Plugin) OnDeactivate() error {
 	}
 
 	for _, team := range teams {
-		if cErr := p.API.UnregisterCommand(team.Id, CommandTrigger); cErr != nil {
+		if cErr := p.unregisterCommand(team.Id); cErr != nil {
 			return errors.Wrap(cErr, "failed to unregister command")
 		}
 	}
@@ -64,7 +66,7 @@ func (p *Plugin) OnDeactivate() error {
 }
 
 func (p *Plugin) ensureBotExists() (string, *model.AppError) {
-	p.API.LogDebug("Ensuring "+botName+" exists")
+	p.API.LogDebug("Ensuring " + botName + " exists")
 
 	bot, createErr := p.API.CreateBot(&model.Bot{
 		Username:    botName,
