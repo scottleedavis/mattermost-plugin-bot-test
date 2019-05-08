@@ -63,6 +63,19 @@ func (p *Plugin) registerCommand(teamId string) error {
 		return errors.Wrap(err, "failed to register command")
 	}
 
+	if err := p.API.RegisterCommand(&model.Command{
+		TeamId:           teamId,
+		Trigger:          "test-bot-create-bot",
+		Username:         botName,
+		AutoComplete:     true,
+		AutoCompleteHint: "",
+		AutoCompleteDesc: "",
+		DisplayName:      "",
+		Description:      "",
+	}); err != nil {
+		return errors.Wrap(err, "failed to register command")
+	}
+
 	return nil
 }
 
@@ -70,7 +83,8 @@ func (p *Plugin) unregisterCommand(teamId string) error {
 	p.API.UnregisterCommand(teamId, "test")
 	p.API.UnregisterCommand(teamId, "test-button")
 	p.API.UnregisterCommand(teamId, "test-button2")
-	return p.API.UnregisterCommand(teamId, "test-time")
+	p.API.UnregisterCommand(teamId, "test-time")
+	return p.API.UnregisterCommand(teamId, "test-bot-create-bot")
 }
 
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -162,6 +176,36 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		if _, pErr := p.API.CreatePost(&post); pErr != nil {
 			p.API.LogError(fmt.Sprintf("%v", pErr))
 		}
+	} else if command == "/test-bot-create-bot" {
+
+		botName := model.NewId()
+		if bot, err := p.API.CreateBot(&model.Bot{
+			Username:    botName,
+			DisplayName: botName,
+			OwnerId:     p.botId,
+			Description: "Bot created by TestBot",
+		}); err != nil {
+			post := model.Post{
+				ChannelId: args.ChannelId,
+				UserId:    p.botId,
+				Message:   "Failed to create bot " + err.Message,
+				Props:     model.StringInterface{},
+			}
+			if _, pErr := p.API.CreatePost(&post); pErr != nil {
+				p.API.LogError(fmt.Sprintf("%v", pErr))
+			}
+		} else {
+			post := model.Post{
+				ChannelId: args.ChannelId,
+				UserId:    p.botId,
+				Message:   "Created bot " + bot.Username,
+				Props:     model.StringInterface{},
+			}
+			if _, pErr := p.API.CreatePost(&post); pErr != nil {
+				p.API.LogError(fmt.Sprintf("%v", pErr))
+			}
+		}
+
 	}
 
 	return &model.CommandResponse{}, nil
