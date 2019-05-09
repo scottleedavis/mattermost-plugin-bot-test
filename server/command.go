@@ -39,19 +39,6 @@ func (p *Plugin) registerCommand(teamId string) error {
 
 	if err := p.API.RegisterCommand(&model.Command{
 		TeamId:           teamId,
-		Trigger:          "test-button2",
-		Username:         botName,
-		AutoComplete:     true,
-		AutoCompleteHint: "",
-		AutoCompleteDesc: "",
-		DisplayName:      "",
-		Description:      "",
-	}); err != nil {
-		return errors.Wrap(err, "failed to register command")
-	}
-
-	if err := p.API.RegisterCommand(&model.Command{
-		TeamId:           teamId,
 		Trigger:          "test-time",
 		Username:         botName,
 		AutoComplete:     true,
@@ -76,15 +63,28 @@ func (p *Plugin) registerCommand(teamId string) error {
 		return errors.Wrap(err, "failed to register command")
 	}
 
+	if err := p.API.RegisterCommand(&model.Command{
+		TeamId:           teamId,
+		Trigger:          "test-ephemeral-post-override",
+		Username:         botName,
+		AutoComplete:     true,
+		AutoCompleteHint: "",
+		AutoCompleteDesc: "",
+		DisplayName:      "",
+		Description:      "",
+	}); err != nil {
+		return errors.Wrap(err, "failed to register command")
+	}
+
 	return nil
 }
 
 func (p *Plugin) unregisterCommand(teamId string) error {
 	p.API.UnregisterCommand(teamId, "test")
 	p.API.UnregisterCommand(teamId, "test-button")
-	p.API.UnregisterCommand(teamId, "test-button2")
 	p.API.UnregisterCommand(teamId, "test-time")
-	return p.API.UnregisterCommand(teamId, "test-bot-create-bot")
+	p.API.UnregisterCommand(teamId, "test-bot-create-bot")
+	return p.API.UnregisterCommand(teamId, "test-ephemeral-post-override")
 }
 
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -104,36 +104,6 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			p.API.LogError(fmt.Sprintf("%v", pErr))
 		}
 	} else if command == "/test-button" {
-
-		URL := "http://127.0.0.1" + fmt.Sprintf("%s", *p.ServerConfig.ServiceSettings.ListenAddress)
-
-		post := model.Post{
-			ChannelId: args.ChannelId,
-			UserId:    p.botId,
-			Message:   "test button",
-			Props: model.StringInterface{
-				"attachments": []*model.SlackAttachment{
-					{
-						Actions: []*model.PostAction{
-							{
-								Id: model.NewId(),
-								Integration: &model.PostActionIntegration{
-									Context: model.StringInterface{},
-									URL:     fmt.Sprintf("%s/plugins/%s/button", URL, manifest.Id),
-								},
-								Type: model.POST_ACTION_TYPE_BUTTON,
-								Name: "click",
-							},
-						},
-					},
-				},
-			},
-		}
-
-		if _, pErr := p.API.CreatePost(&post); pErr != nil {
-			p.API.LogError(fmt.Sprintf("%v", pErr))
-		}
-	} else if command == "/test-button2" {
 
 		URL := fmt.Sprintf("%s", *p.ServerConfig.ServiceSettings.SiteURL)
 
@@ -204,6 +174,17 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			if _, pErr := p.API.CreatePost(&post); pErr != nil {
 				p.API.LogError(fmt.Sprintf("%v", pErr))
 			}
+		}
+
+	} else if command == "/test-ephemeral-post-override" {
+
+		if _, err := p.API.CreatePost(&model.Post{
+			UserId:    p.botId,
+			ChannelId: args.ChannelId,
+			Message:   "Bot ephemeral link",
+			Type:      "custom_test_plugin",
+		}); err != nil {
+			return &model.CommandResponse{}, err
 		}
 
 	}
