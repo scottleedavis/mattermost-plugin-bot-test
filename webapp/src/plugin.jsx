@@ -4,7 +4,7 @@ import PostType from './components/post_type';
 
 export default class DemoPlugin {
     initialize(registry) {
-        registry.registerPostTypeComponent('custom_test_plugin', PostType);
+        registry.registerPostTypeComponent('system_ephemeral_test_plugin', PostType);
     }
 
     uninitialize() {

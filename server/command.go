@@ -178,14 +178,14 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 
 	} else if command == "/test-ephemeral-post-override" {
 
-		if _, err := p.API.CreatePost(&model.Post{
+		p.API.SendEphemeralPost(args.UserId, &model.Post{
 			UserId:    p.botId,
 			ChannelId: args.ChannelId,
 			Message:   "Bot ephemeral link",
-			Type:      "custom_test_plugin",
-		}); err != nil {
-			return &model.CommandResponse{}, err
-		}
+			Props: model.StringInterface{
+				"type": "system_ephemeral_test_plugin",
+			},
+		})
 
 	}
 
