@@ -2,7 +2,7 @@
     "id": "com.github.scottleedavis.mattermost-plugin-bot-test",
     "name": "Test Bot Plugin",
     "description": "Tests a Bot",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "server": {
         "executables": {
             "linux-amd64": "server/dist/plugin-linux-amd64",
